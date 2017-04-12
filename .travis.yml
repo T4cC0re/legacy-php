@@ -4,30 +4,25 @@ dist: trusty
 sudo: required
 
 env:
-  global:
+ -TARGET=ci1
+ -TARGET=ci2
+ -TARGET=ci3
+ -TARGET=ci4
+ -TARGET=ci5
+ -TARGET=ci6
+ -TARGET=ci7
+ -TARGET=ci8
+ -TARGET=ci9
+ -TARGET=ci10
+ -TARGET=ci12
+ -TARGET=ci13
+ -TARGET=ci14
+ -TARGET=ci15
+ -TARGET=ci16
 
 script:
-  - echo $TRAVIS_BRANCH
-  - make ci1
-  - make ci2
-  - make ci3
-  - make ci4
-  - make ci5
-  - make ci6
-  - make ci7
-  - make ci8
-  - make ci9
-  - make ci10
-  - make ci12
-  - make ci13
-  - make ci14
-  - make ci15
-  - make ci16
+  - echo $TRAVIS_BRANCH $TARGET
+  - make $TARGET
   - make show
-
-after_success:
-  if [ "$TRAVIS_BRANCH" == "master" ]; then
-  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-  make push;
-  fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; make push; fi
 
