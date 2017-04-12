@@ -14,6 +14,7 @@ env:
  - TARGET=ci8
  - TARGET=ci9
  - TARGET=ci10
+ - TARGET=ci11
  - TARGET=ci12
  - TARGET=ci13
  - TARGET=ci14
