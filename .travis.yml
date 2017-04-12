@@ -1,0 +1,18 @@
+services:
+  - docker
+dist: trusty
+sudo: required
+
+env:
+  global:
+
+script:
+  make 5.3.29
+  make show
+
+after_success:
+  if [ "$TRAVIS_BRANCH" == "master" ]; then
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  make push;
+  fi
+
