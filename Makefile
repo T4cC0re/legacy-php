@@ -35,14 +35,16 @@ clean:
 push:
 	@docker push t4cc0re/legacy-php
 
-phpv:
-	docker run -it t4cc0re/legacy-php:5.2 php -v
-	docker run -it t4cc0re/legacy-php:5.3 php -v
-
 # >= 5.2.4
 5.%: check
 	@echo +++ Building $@-$(GITREV)...
 	@docker build -t t4cc0re/legacy-php:$@-$(GITREV) --pull --no-cache --build-arg PHP_VERSION="$@" . | tee $@.log
 	@docker tag t4cc0re/legacy-php:$@-$(GITREV) t4cc0re/legacy-php:$@
+	@docker tag t4cc0re/legacy-php:$@-$(GITREV) t4cc0re/legacy-php:$@-cli
 	@touch $@
 
+phpv:
+	for image in `docker images t4cc0re/legacy-php --format '{{.Repository}}:{{.Tag}}'`; do echo -e "------------\n$${image}" 2>&1; docker run -it $${image} php -v; done
+
+test:
+	@set -o pipefail make phpv | grep "Unable to load" && exit 1 || exit 0;
