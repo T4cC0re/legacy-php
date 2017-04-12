@@ -46,7 +46,7 @@ ENV PATH "/legacy-php/bin:/usr/bin:$PATH"
 
 COPY docker-php-entrypoint docker-php-ext-configure docker-php-ext-enable docker-php-ext-install /legacy-php/bin/
 
-RUN apt-get update \
+RUN set -x && apt-get update \
     && apt-get install -y \
         $PHPIZE_DEPS \
         $buildDeps \
@@ -57,13 +57,12 @@ RUN apt-get update \
         libxml2 \
         wget \
         xz-utils \
-        --no-install-recommends \
+        --no-install-recommends >/dev/null \
     && rm -r /var/lib/apt/lists/* \
     && mkdir -p $PHP_INI_DIR/conf.d \
     && mkdir -p /usr/src \
     && cd /usr/src \
     && wget --no-check-certificate -O php.tar.gz "$PHP_URL" \
-    && apt-get purge -y --auto-remove $fetchDeps \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
         LDFLAGS="$PHP_LDFLAGS" \
@@ -108,8 +107,8 @@ RUN apt-get update \
         --with-xmlrpc \
         --with-xsl \
         --with-zlib \
-        $PHP_EXTRA_CONFIGURE_ARGS \
-        && make -j "$(nproc)" \
+        $PHP_EXTRA_CONFIGURE_ARGS >/dev/null \
+        && make -j "$(nproc)" >/dev/null \
         && make install \
         && { find /legacy-php -type f -executable -exec strip --strip-all '{}' + || true; } \
         && make clean \

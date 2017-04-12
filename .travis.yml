@@ -8,7 +8,21 @@ env:
 
 script:
   - echo $TRAVIS_BRANCH
-  - make
+  - make ci1
+  - make ci2
+  - make ci3
+  - make ci4
+  - make ci5
+  - make ci6
+  - make ci7
+  - make ci8
+  - make ci9
+  - make ci10
+  - make ci12
+  - make ci13
+  - make ci14
+  - make ci15
+  - make ci16
   - make show
 
 after_success:
