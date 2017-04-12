@@ -27,6 +27,6 @@ phpv:
 
 # >= 5.2.4
 5.%: check
-	docker build -t t4cc0re/legacy-php:$@ --pull --no-cache --build-arg PHP_VERSION="$@" . | tee $@.log
-	touch $@
+	@docker build -t t4cc0re/legacy-php:$@ --pull --no-cache --build-arg PHP_VERSION="$@" . | tee $@.log
+	@touch $@
 

@@ -7,8 +7,9 @@ env:
   global:
 
 script:
-  make 5.3.29
-  make show
+  - echo $TRAVIS_BRANCH
+  - make 5.3.29
+  - make show
 
 after_success:
   if [ "$TRAVIS_BRANCH" == "master" ]; then
