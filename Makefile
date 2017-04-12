@@ -1,4 +1,5 @@
 .PHONY: build show clean push phpv rebuild check php
+GITREV=$(shell git describe --always --dirty)
 
 build: php
 
@@ -28,8 +29,8 @@ show:
 	@docker images -a t4cc0re/legacy-php; exit 0
 
 clean:
-	@docker rmi --force `docker images -q t4cc0re/legacy-php` 2> /dev/null; exit 0
 	@rm -f ./5.*
+	@docker rmi --force `docker images -q t4cc0re/legacy-php` > /dev/null; exit 0
 
 push:
 	@docker push t4cc0re/legacy-php
@@ -40,7 +41,8 @@ phpv:
 
 # >= 5.2.4
 5.%: check
-	@echo +++ Building $@...
-	@docker build -t t4cc0re/legacy-php:$@ --pull --no-cache --build-arg PHP_VERSION="$@" . | tee $@.log
+	@echo +++ Building $@-$(GITREV)...
+	@docker build -t t4cc0re/legacy-php:$@-$(GITREV) --pull --no-cache --build-arg PHP_VERSION="$@" . | tee $@.log
+	@docker tag t4cc0re/legacy-php:$@-$(GITREV) t4cc0re/legacy-php:$@
 	@touch $@
 

@@ -44,9 +44,11 @@ ENV PHPIZE_DEPS "\
 
 ENV PATH "/legacy-php/bin:/usr/bin:$PATH"
 
-COPY docker-php-entrypoint docker-php-ext-configure docker-php-ext-enable docker-php-ext-install /legacy-php/bin/
+COPY docker-php-* /legacy-php/bin/
 
-RUN set -x && apt-get update \
+RUN set -x \
+    && chmod +x /legacy-php/bin/* \
+    && apt-get update \
     && apt-get install -y \
         $PHPIZE_DEPS \
         $buildDeps \
@@ -67,7 +69,7 @@ RUN set -x && apt-get update \
         CPPFLAGS="$PHP_CPPFLAGS" \
         LDFLAGS="$PHP_LDFLAGS" \
     && mkdir -p /usr/src/php \
-    && tar -xf /usr/src/php.tar.gz -C "/usr/src/php" --strip-components=1 \
+    && docker-php-source extract \
     && cd /usr/src/php \
     && ./configure \
         --prefix=/legacy-php \
@@ -112,7 +114,7 @@ RUN set -x && apt-get update \
         && make install \
         && { find /legacy-php -type f -executable -exec strip --strip-all '{}' + || true; } \
         && make clean \
-        && rm -rf "/usr/src/php" \
+        && docker-php-source delete \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 #    && rm -rf -- /var/lib/apt/lists/* \
 
