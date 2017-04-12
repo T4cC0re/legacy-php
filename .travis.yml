@@ -8,7 +8,7 @@ env:
 
 script:
   - echo $TRAVIS_BRANCH
-  - make 5.3.29
+  - make
   - make show
 
 after_success:
