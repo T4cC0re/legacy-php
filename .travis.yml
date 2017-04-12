@@ -25,5 +25,6 @@ script:
   - echo $TRAVIS_BRANCH $TARGET
   - make $TARGET
   - make show
+  - make test
   - if [ "$TRAVIS_BRANCH" == "master" ]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; make push; fi
 
