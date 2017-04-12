@@ -4,21 +4,21 @@ dist: trusty
 sudo: required
 
 env:
- -TARGET=ci1
- -TARGET=ci2
- -TARGET=ci3
- -TARGET=ci4
- -TARGET=ci5
- -TARGET=ci6
- -TARGET=ci7
- -TARGET=ci8
- -TARGET=ci9
- -TARGET=ci10
- -TARGET=ci12
- -TARGET=ci13
- -TARGET=ci14
- -TARGET=ci15
- -TARGET=ci16
+ - TARGET=ci1
+ - TARGET=ci2
+ - TARGET=ci3
+ - TARGET=ci4
+ - TARGET=ci5
+ - TARGET=ci6
+ - TARGET=ci7
+ - TARGET=ci8
+ - TARGET=ci9
+ - TARGET=ci10
+ - TARGET=ci12
+ - TARGET=ci13
+ - TARGET=ci14
+ - TARGET=ci15
+ - TARGET=ci16
 
 script:
   - echo $TRAVIS_BRANCH $TARGET
