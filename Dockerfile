@@ -3,6 +3,7 @@ FROM t4cc0re/squeeze
 ARG PHP_EXTRA_CONFIGURE_ARGS
 ARG PHP_VERSION=5.3.29
 ENV PHP_URL "http://museum.php.net/php5/php-${PHP_VERSION}.tar.gz"
+ENV ALT_URL "https://secure.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror"
 ENV PHP_INI_DIR /usr/local/etc/php
 
 # temp / build deps
@@ -64,7 +65,7 @@ RUN set -x \
     && mkdir -p $PHP_INI_DIR/conf.d \
     && mkdir -p /usr/src \
     && cd /usr/src \
-    && wget --no-check-certificate -O php.tar.gz "$PHP_URL" \
+    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget -nv --no-check-certificate -O php.tar.gz "$ALT_URL") \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
         LDFLAGS="$PHP_LDFLAGS" \
