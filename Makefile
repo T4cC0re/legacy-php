@@ -1,5 +1,6 @@
 .PHONY: build show clean push phpv rebuild check php
 GITREV=$(shell git describe --always --dirty)
+IMGPREFIX = $(shell echo $$IMGPREFIX)
 
 build: php
 
@@ -44,11 +45,11 @@ Dockerfile.fpm: Dockerfile fpm.part
 # >= 5.2.4
 5.%: check Dockerfile.cli Dockerfile.fpm
 	@echo +++ Building $@-$(GITREV)...
-	@docker build -t t4cc0re/legacy-php:$$IMGPREFIX$@-cli-$(GITREV) -f Dockerfile.cli --pull --no-cache --build-arg PHP_EXTRA_CONFIGURE_ARGS="" --build-arg PHP_VERSION="$@" . | tee $@-cli.log
-	@docker build -t t4cc0re/legacy-php:$$IMGPREFIX$@-fpm-$(GITREV) -f Dockerfile.fpm --pull --no-cache --build-arg PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data" --build-arg PHP_VERSION="$@" . | tee $@-fpm.log
-	@docker tag t4cc0re/legacy-php:$$IMGPREFIX$@-cli-$(GITREV) t4cc0re/legacy-php:$$IMGPREFIX$@
-	@docker tag t4cc0re/legacy-php:$$IMGPREFIX$@-cli-$(GITREV) t4cc0re/legacy-php:$$IMGPREFIX$@-cli
-	@docker tag t4cc0re/legacy-php:$$IMGPREFIX$@-fpm-$(GITREV) t4cc0re/legacy-php:$$IMGPREFIX$@-fpm
+	@docker build -t t4cc0re/legacy-php:$(IMGPREFIX)$@-cli-$(GITREV) -f Dockerfile.cli --pull --no-cache --build-arg PHP_EXTRA_CONFIGURE_ARGS="" --build-arg PHP_VERSION="$@" . | tee $@-cli.log
+	@docker build -t t4cc0re/legacy-php:$(IMGPREFIX)$@-fpm-$(GITREV) -f Dockerfile.fpm --pull --no-cache --build-arg PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data" --build-arg PHP_VERSION="$@" . | tee $@-fpm.log
+	@docker tag t4cc0re/legacy-php:$(IMGPREFIX)$@-cli-$(GITREV) t4cc0re/legacy-php:$(IMGPREFIX)$@
+	@docker tag t4cc0re/legacy-php:$(IMGPREFIX)$@-cli-$(GITREV) t4cc0re/legacy-php:$(IMGPREFIX)$@-cli
+	@docker tag t4cc0re/legacy-php:$(IMGPREFIX)$@-fpm-$(GITREV) t4cc0re/legacy-php:$(IMGPREFIX)$@-fpm
 	@touch $@
 
 phpv:
