@@ -9,6 +9,6 @@
  - A big pile of shit in a small package!
  - every PHP5.* version >=5.2.4 with as much options as I could find (PRs welcome!)
 
-GitHub repo: https://github.com/T4cC0re/legacy-php  
-Travis-CI: https://travis-ci.org/T4cC0re/legacy-php  
-Docker Hub: https://hub.docker.com/r/t4cc0re/legacy-php/  
+[GitHub repo](https://github.com/T4cC0re/legacy-php)  
+[Travis-CI](https://travis-ci.org/T4cC0re/legacy-php)  
+[Docker Hub](https://hub.docker.com/r/t4cc0re/legacy-php/)  
