@@ -4,7 +4,8 @@ dist: trusty
 sudo: required
 
 env:
- - TARGET=5.5.38 5.2.4
+ - TARGET=5.5.38
+ - TARGET=5.2.4
 # - TARGET=ci1
 # - TARGET=ci2
 # - TARGET=ci3
@@ -24,7 +25,8 @@ env:
 
 script:
   - echo $TRAVIS_BRANCH $TARGET
-  - make $TARGET
+  - IMGPREFIX="$TRAVIS_BRANCH" make $TARGET
   - make show
   - make test
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; make push; fi
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then make push;  fi
