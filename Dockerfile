@@ -1,6 +1,6 @@
 FROM t4cc0re/squeeze
 
-ARG PHP_EXTRA_CONFIGURE_ARGS
+ARG PHP_EXTRA_CONFIGURE_ARGS="--disable-cgi "
 ARG PHP_VERSION=5.3.29
 ENV PHP_URL "http://museum.php.net/php5/php-${PHP_VERSION}.tar.gz"
 ENV ALT_URL "https://secure.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror"
@@ -45,10 +45,11 @@ ENV PHPIZE_DEPS "\
 
 ENV PATH "/legacy-php/bin:/usr/bin:$PATH"
 
-COPY docker-php-* /legacy-php/bin/
+COPY docker-php-entrypoint docker-php-ext-configure docker-php-ext-enable docker-php-ext-install docker-php-source /legacy-php/bin/
 
 RUN set -x \
     && chmod +x /legacy-php/bin/* \
+    && echo "${PATH}" && ls -lsa /legacy-php/bin \
     && apt-get update \
     && apt-get install -y \
         $PHPIZE_DEPS \
@@ -72,13 +73,14 @@ RUN set -x \
     && mkdir -p /usr/src/php \
     && docker-php-source extract \
     && cd /usr/src/php \
+    && gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
     && ./configure \
+        --build="$gnuArch" \
         --prefix=/legacy-php \
         --with-config-file-path="$PHP_INI_DIR" \
         --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
         \
-        --disable-cgi \
-#        --disable-cli \
+        --disable-cli \
         --enable-bcmath \
         --with-curl \
         --enable-exif \
@@ -110,15 +112,13 @@ RUN set -x \
         --with-xmlrpc \
         --with-xsl \
         --with-zlib \
+        --with-pcre-regex=/usr \
+        --with-libdir="lib/$gnuArch" \
         $PHP_EXTRA_CONFIGURE_ARGS >/dev/null \
         && make -j "$(nproc)" >/dev/null \
         && make install \
         && { find /legacy-php -type f -executable -exec strip --strip-all '{}' + || true; } \
         && make clean \
         && docker-php-source delete \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
-#    && rm -rf -- /var/lib/apt/lists/* \
-
-ENTRYPOINT ["docker-php-entrypoint"]
-CMD ["php", "-a"]
-
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps \
+    && rm -rf -- /var/lib/apt/lists/*

@@ -1,0 +1,3 @@
+
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["php", "-a"]

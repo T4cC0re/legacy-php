@@ -35,12 +35,20 @@ clean:
 push:
 	@docker push t4cc0re/legacy-php
 
+Dockerfile.cli: Dockerfile cli.part
+	@cat Dockerfile cli.part > Dockerfile.cli
+
+Dockerfile.fpm: Dockerfile fpm.part
+	@cat Dockerfile fpm.part > Dockerfile.fpm
+
 # >= 5.2.4
-5.%: check
+5.%: check Dockerfile.cli Dockerfile.fpm
 	@echo +++ Building $@-$(GITREV)...
-	@docker build -t t4cc0re/legacy-php:$@-$(GITREV) --pull --no-cache --build-arg PHP_VERSION="$@" . | tee $@.log
-	@docker tag t4cc0re/legacy-php:$@-$(GITREV) t4cc0re/legacy-php:$@
-	@docker tag t4cc0re/legacy-php:$@-$(GITREV) t4cc0re/legacy-php:$@-cli
+	@docker build -t t4cc0re/legacy-php:$@-cli-$(GITREV) -f Dockerfile.cli --pull --no-cache --build-arg PHP_EXTRA_CONFIGURE_ARGS="" --build-arg PHP_VERSION="$@" . | tee $@-cli.log
+	@docker build -t t4cc0re/legacy-php:$@-fpm-$(GITREV) -f Dockerfile.fpm --pull --no-cache --build-arg PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data" --build-arg PHP_VERSION="$@" . | tee $@-fpm.log
+	@docker tag t4cc0re/legacy-php:$@-cli-$(GITREV) t4cc0re/legacy-php:$@
+	@docker tag t4cc0re/legacy-php:$@-cli-$(GITREV) t4cc0re/legacy-php:$@-cli
+	@docker tag t4cc0re/legacy-php:$@-fpm-$(GITREV) t4cc0re/legacy-php:$@-fpm
 	@touch $@
 
 phpv:
