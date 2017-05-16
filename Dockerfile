@@ -48,8 +48,8 @@ ENV PATH "/legacy-php/bin:/usr/bin:$PATH"
 COPY docker-php-entrypoint docker-php-ext-configure docker-php-ext-enable docker-php-ext-install docker-php-source /legacy-php/bin/
 
 RUN set -x \
+    && echo "Building: $PHP_VERSION" \
     && chmod +x /legacy-php/bin/* \
-    && echo "${PATH}" && ls -lsa /legacy-php/bin \
     && apt-get update \
     && apt-get install -y \
         $PHPIZE_DEPS \
@@ -66,16 +66,14 @@ RUN set -x \
     && mkdir -p $PHP_INI_DIR/conf.d \
     && mkdir -p /usr/src \
     && cd /usr/src \
-    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget -nv --no-check-certificate -O php.tar.gz "$ALT_URL") \
+    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget -nv -O php.tar.gz "$ALT_URL") \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
         LDFLAGS="$PHP_LDFLAGS" \
     && mkdir -p /usr/src/php \
     && docker-php-source extract \
     && cd /usr/src/php \
-    && gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
     && ./configure \
-        --build="$gnuArch" \
         --prefix=/legacy-php \
         --with-config-file-path="$PHP_INI_DIR" \
         --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
@@ -113,7 +111,6 @@ RUN set -x \
         --with-xsl \
         --with-zlib \
         --with-pcre-regex=/usr \
-        --with-libdir="lib/$gnuArch" \
         $PHP_EXTRA_CONFIGURE_ARGS >/dev/null \
         && make -j "$(nproc)" >/dev/null \
         && make install \
