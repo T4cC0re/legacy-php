@@ -110,7 +110,6 @@ RUN set -x \
         --with-xmlrpc \
         --with-xsl \
         --with-zlib \
-        --with-pcre-regex=/usr \
         $PHP_EXTRA_CONFIGURE_ARGS >/dev/null \
         && make -j "$(nproc)" >/dev/null \
         && make install \
