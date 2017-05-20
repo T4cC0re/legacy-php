@@ -43,7 +43,7 @@ ENV PHPIZE_DEPS "\
     re2c \
 "
 
-ENV PATH "/legacy-php/bin:/usr/bin:$PATH"
+ENV PATH "/legacy-php/bin:/legacy-php/sbin:/usr/bin:$PATH"
 
 COPY docker-php-entrypoint docker-php-ext-configure docker-php-ext-enable docker-php-ext-install docker-php-source /legacy-php/bin/
 
