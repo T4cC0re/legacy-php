@@ -15,7 +15,7 @@ RUN set -ex \
 			echo 'include=/etc/php-fpm.d/*.conf'; \
 		} | tee php-fpm.conf; \
 	fi \
-	&& mkdir -p /etc/php-fpm.d
+	&& mkdir -p /etc/php-fpm.d \
 	&& { \
 		echo '[global]'; \
 		echo 'error_log = /proc/self/fd/2'; \
@@ -35,7 +35,7 @@ RUN set -ex \
 		echo; \
 		echo '[www]'; \
 		echo 'listen = [::]:9000'; \
-	} | tee /etc/php-fpm.d/zz-docker.conf
+	} | tee /etc/php-fpm.d/zz-docker.conf \
 	&& ln -s /usr/local/etc/php-fpm.conf /legacy-php/etc/php-fpm.conf
 
 EXPOSE 9000
