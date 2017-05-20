@@ -12,9 +12,10 @@ RUN set -ex \
 		cp php-fpm.conf.default php-fpm.d/www.conf; \
 		{ \
 			echo '[global]'; \
-			echo 'include=etc/php-fpm.d/*.conf'; \
+			echo 'include=/etc/php-fpm.d/*.conf'; \
 		} | tee php-fpm.conf; \
 	fi \
+	&& mkdir -p /etc/php-fpm.d
 	&& { \
 		echo '[global]'; \
 		echo 'error_log = /proc/self/fd/2'; \
@@ -27,14 +28,15 @@ RUN set -ex \
 		echo; \
 		echo '; Ensure worker stdout and stderr are sent to the main error log.'; \
 		echo 'catch_workers_output = yes'; \
-	} | tee php-fpm.d/docker.conf \
+	} | tee /etc/php-fpm.d/docker.conf \
 	&& { \
 		echo '[global]'; \
 		echo 'daemonize = no'; \
 		echo; \
 		echo '[www]'; \
 		echo 'listen = [::]:9000'; \
-	} | tee php-fpm.d/zz-docker.conf
+	} | tee /etc/php-fpm.d/zz-docker.conf
+	&& ln -s /usr/local/etc/php-fpm.conf /legacy-php/etc/php-fpm.conf
 
 EXPOSE 9000
 CMD ["php-fpm"]
