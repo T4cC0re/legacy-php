@@ -78,7 +78,7 @@ RUN set -x \
         --with-config-file-path="$PHP_INI_DIR" \
         --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
         \
-        --disable-cli \
+#        --disable-cli \
         --enable-bcmath \
         --with-curl \
         --enable-exif \
