@@ -1,6 +1,6 @@
 FROM t4cc0re/squeeze
 
-ARG PHP_EXTRA_CONFIGURE_ARGS
+ARG PHP_EXTRA_CONFIGURE_ARGS="--disable-cgi "
 ARG PHP_VERSION=5.3.29
 ENV PHP_URL "http://museum.php.net/php5/php-${PHP_VERSION}.tar.gz"
 ENV ALT_URL "https://secure.php.net/get/php-${PHP_VERSION}.tar.gz/from/this/mirror"
@@ -14,6 +14,7 @@ ENV buildDeps "\
     libbz2-dev \
     libcurl4-openssl-dev \
     libedit-dev \
+    libevent-dev \
     libjpeg8-dev \
     libmhash-dev \
     libmysqlclient-dev \
@@ -43,11 +44,12 @@ ENV PHPIZE_DEPS "\
     re2c \
 "
 
-ENV PATH "/legacy-php/bin:/usr/bin:$PATH"
+ENV PATH "/legacy-php/bin:/legacy-php/sbin:/usr/bin:$PATH"
 
-COPY docker-php-* /legacy-php/bin/
+COPY docker-php-entrypoint docker-php-ext-configure docker-php-ext-enable docker-php-ext-install docker-php-source /legacy-php/bin/
 
 RUN set -x \
+    && echo "Building: $PHP_VERSION" \
     && chmod +x /legacy-php/bin/* \
     && apt-get update \
     && apt-get install -y \
@@ -65,19 +67,18 @@ RUN set -x \
     && mkdir -p $PHP_INI_DIR/conf.d \
     && mkdir -p /usr/src \
     && cd /usr/src \
-    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget -nv --no-check-certificate -O php.tar.gz "$ALT_URL") \
+    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget --no-check-certificate -nv -O php.tar.gz "$ALT_URL") \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
         LDFLAGS="$PHP_LDFLAGS" \
     && mkdir -p /usr/src/php \
     && docker-php-source extract \
     && cd /usr/src/php \
-    && ./configure \
+    && LD_LIBRARY_PATH=/usr/local/lib ./configure \
         --prefix=/legacy-php \
         --with-config-file-path="$PHP_INI_DIR" \
         --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
         \
-        --disable-cgi \
 #        --disable-cli \
         --enable-bcmath \
         --with-curl \
@@ -116,9 +117,5 @@ RUN set -x \
         && { find /legacy-php -type f -executable -exec strip --strip-all '{}' + || true; } \
         && make clean \
         && docker-php-source delete \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
-#    && rm -rf -- /var/lib/apt/lists/* \
-
-ENTRYPOINT ["docker-php-entrypoint"]
-CMD ["php", "-a"]
-
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps \
+    && rm -rf -- /var/lib/apt/lists/*
