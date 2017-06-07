@@ -41,4 +41,4 @@ phpv:
 	for image in `docker images t4cc0re/legacy-php --format '{{.Repository}}:{{.Tag}}'`; do echo -e "------------\n$${image}" 2>&1; docker run -it $${image} php -v; done
 
 test:
-	@set -o pipefail make phpv | grep "Unable to load" && exit 1 || exit 0;
+	@make phpv | grep "Unable to load" && exit 1 || exit 0;

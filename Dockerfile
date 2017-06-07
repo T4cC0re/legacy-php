@@ -66,14 +66,14 @@ RUN set -x \
     && mkdir -p $PHP_INI_DIR/conf.d \
     && mkdir -p /usr/src \
     && cd /usr/src \
-    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget -nv -O php.tar.gz "$ALT_URL") \
+    && (wget -nv --no-check-certificate -O php.tar.gz "$PHP_URL" || wget --no-check-certificate -nv -O php.tar.gz "$ALT_URL") \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
         LDFLAGS="$PHP_LDFLAGS" \
     && mkdir -p /usr/src/php \
     && docker-php-source extract \
     && cd /usr/src/php \
-    && ./configure \
+    && LD_LIBRARY_PATH=/usr/local/lib ./configure \
         --prefix=/legacy-php \
         --with-config-file-path="$PHP_INI_DIR" \
         --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
