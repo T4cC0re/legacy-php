@@ -14,6 +14,7 @@ ENV buildDeps "\
     libbz2-dev \
     libcurl4-openssl-dev \
     libedit-dev \
+    libevent-dev \
     libjpeg8-dev \
     libmhash-dev \
     libmysqlclient-dev \
