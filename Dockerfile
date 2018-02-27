@@ -1,4 +1,4 @@
-FROM t4cc0re/squeeze
+FROM debian:jessie
 
 ARG PHP_EXTRA_CONFIGURE_ARGS
 ARG PHP_VERSION=5.3.29
